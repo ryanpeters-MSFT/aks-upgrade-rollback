@@ -10,7 +10,7 @@ The PowerShell script in `setup.ps1` does the following:
 4. Upgrades only the control plane to `1.34`.
 5. Upgrades the node pool to `1.34`.
 
-At that point, you have an upgraded node pool that can be rolled back with the current AKS rollback workflow.
+At that point, you have an upgraded node pool that can be rolled back with the current [AKS rollback workflow](https://learn.microsoft.com/en-us/azure/aks/roll-back-node-pool-version#node-pool-rollback-workflow).
 
 ## Run
 
@@ -46,7 +46,7 @@ Run the rollback:
 az aks nodepool rollback -g rg-aks-rollback --cluster-name aksrollback --nodepool-name nodepool1
 ```
 
-The current CLI reference describes this as rolling the node pool back to the most recently used configuration (`N-1`). That rollback restores both the Kubernetes version and the node image version to the most recent prior compatible state.
+The current [CLI reference for `az aks nodepool rollback`](https://learn.microsoft.com/en-us/cli/azure/aks/nodepool?view=azure-cli-latest#az-aks-nodepool-rollback) describes this as rolling the node pool back to the most recently used configuration (`N-1`). That rollback restores both the Kubernetes version and the node image version to the most recent prior compatible state.
 
 If you want to watch the operation after using `--no-wait` on other AKS commands, use:
 
@@ -56,7 +56,7 @@ az aks nodepool wait -g rg-aks-rollback --cluster-name aksrollback --nodepool-na
 
 ## Duration And Timeout Parameters
 
-This repo itself does not pass custom timeout or soak settings, but the current AKS docs define several duration-related controls that matter when you test upgrades and rollbacks.
+This repo itself does not pass custom timeout or soak settings, but the current AKS docs define several duration-related controls that matter when you test upgrades and rollbacks. See the [rolling node pool upgrade settings](https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-node-pools-rolling#configure-rolling-upgrade-settings), [blue-green upgrade properties](https://learn.microsoft.com/en-us/azure/aks/blue-green-node-pool-upgrade#customize-blue-green-upgrade-properties), and [`az aks wait` CLI reference](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-wait).
 
 ### Rollback Window
 
@@ -71,7 +71,7 @@ The script uses:
 az aks wait -n aksrollback -g rg-aks-rollback --created
 ```
 
-No explicit wait values are passed, so the documented defaults apply:
+No explicit wait values are passed, so the [documented `az aks wait` defaults](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-wait) apply:
 
 - `--interval`: `30` seconds.
 - `--timeout`: `3600` seconds.
@@ -111,7 +111,7 @@ az aks nodepool upgrade -g rg-aks-rollback --cluster-name aksrollback -n nodepoo
 
 ### Blue-Green Upgrade Durations
 
-If you test blue-green node pool upgrades instead of the default rolling strategy, the current docs define separate timing parameters:
+If you test blue-green node pool upgrades instead of the default rolling strategy, the [blue-green upgrade docs](https://learn.microsoft.com/en-us/azure/aks/blue-green-node-pool-upgrade#customize-blue-green-upgrade-properties) define separate timing parameters:
 
 - `--drain-timeout-bg`: pod eviction timeout per node during the blue-green drain phase.
 	- Default: `30` minutes.
@@ -135,7 +135,7 @@ az aks nodepool upgrade -g rg-aks-rollback --cluster-name aksrollback -n nodepoo
 
 ## Current Limitations And Accuracy Notes
 
-These points are current per the latest rollback and upgrade docs:
+These points are current per the latest [rollback limitations and considerations](https://learn.microsoft.com/en-us/azure/aks/roll-back-node-pool-version#node-pool-rollback-limitations-and-considerations), [rolling upgrade settings](https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-node-pools-rolling#configure-rolling-upgrade-settings), and [blue-green upgrade limitations](https://learn.microsoft.com/en-us/azure/aks/blue-green-node-pool-upgrade#blue-green-upgrade-limitations-and-considerations) docs:
 
 - Rollback is limited to version changes. It does not revert unrelated node pool configuration changes.
 - The rollback operation is node pool scoped only. It does not roll back the AKS control plane.
